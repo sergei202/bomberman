@@ -12,10 +12,13 @@
 
 		params.scene.add.existing(this);
 
+		this.body.immovable = true;
+
 	}
 
 
 	public update() {
+		if(0<1) return;
 		if(!this.body.touching.none || !this.body.blocked.none || (this.body.velocity.x+this.body.velocity.y)===0) return this.switchDir();
 
 		if(this.dirChangeTimer>500) {
