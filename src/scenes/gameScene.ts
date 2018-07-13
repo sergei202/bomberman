@@ -28,6 +28,7 @@ export class GameScene extends Phaser.Scene {
 
 		this.physics.world.bounds.width  = bgLayer.width;
 		this.physics.world.bounds.height = bgLayer.height;
+		this.physics.world.setBoundsCollision(true, true, true, true);
 
 		this.initAnims();
 
@@ -40,14 +41,25 @@ export class GameScene extends Phaser.Scene {
 				this.player = new Player({scene:this, x:object['x']+16, y:object['y']-24});
 			}
 			if(object.type==='enemy') {
+				// if(!this.enemies.children.entries.length)
 				this.enemies.add(new Enemy({scene:this, x:object['x']+16, y:object['y']-16}));
 			}
 		})
 
-		this.physics.add.collider(wallLayer, this.player);
-		this.physics.add.collider(wallLayer, this.enemies);
-		this.physics.add.collider(this.player, this.enemies);
-		this.physics.add.collider(this.enemies, this.enemies);
+		// this.physics.add.collider(wallLayer, this.player, (player,wall) => {
+		// 	// console.log('wall collision: player=%o', player.body['blocked']);
+		// });
+		this.physics.add.collider(this.enemies, this.enemies, (a,b) => {
+			// console.log('enemy collision: a=%o, b=%o', a,b);
+			if((a as any).onCollide) (a as any).onCollide(b);
+			if((b as any).onCollide) (b as any).onCollide(a);
+		});
+
+		this.physics.add.collider(<any>[wallLayer,this.player], this.enemies, (a,b) => {
+			// console.log('enemy collision: a=%o, b=%o', a,b);
+			if((a as any).onCollide) (a as any).onCollide(b);
+			if((b as any).onCollide) (b as any).onCollide(a);
+		});
 	}
 
 	update() {

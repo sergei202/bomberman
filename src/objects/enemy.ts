@@ -1,6 +1,6 @@
  export class Enemy extends Phaser.Physics.Arcade.Sprite {
 	cursors:any;
-	speed = 64;
+	speed = 100;
 	dir = 2;		// 0=up, 1=right, 2=down, 3=left
 	dirChangeTimer = 0;
 
@@ -8,44 +8,50 @@
 		super(params.scene, params.x, params.y, 'enemy');
 
 		params.scene.physics.world.enable(this);
-		this.setCollideWorldBounds(true);
-
 		params.scene.add.existing(this);
 
-		this.body.immovable = true;
+		// this.body.immovable = true;
 
+		this.setSize(16,16,true);
+		this.setOrigin(0.5);
+
+		this.switchDir();
 	}
 
 
 	public update() {
-		if(0<1) return;
-		if(!this.body.touching.none || !this.body.blocked.none || (this.body.velocity.x+this.body.velocity.y)===0) return this.switchDir();
+		if((this.body.velocity.x+this.body.velocity.y)===0) return this.switchDir();
 
-		if(this.dirChangeTimer>500) {
+		if(this.dirChangeTimer>100) {
 			var dirs = [];
 			if(this.dir===0 || this.dir===2) {
-				console.log('dir: %o', this.dir)
+				// console.log('dir: %o', this.dir);
 				if(!this.body.blocked.right && !this.body.touching.right) {
-					console.log('right: %o %o', this.body.blocked.right, this.body.touching.right);
+					// console.log('right: %o %o', this.body.blocked.right, this.body.touching.right);
 					dirs.push(this.walkRight);
 				}
 				if(!this.body.blocked.left  && !this.body.touching.left) {
-					console.log('left: %o %o', this.body.blocked.left, this.body.touching.left);
+					// console.log('left: %o %o', this.body.blocked.left, this.body.touching.left);
 					dirs.push(this.walkLeft);
 				}
 			}
-			// if(this.dir===1 || this.dir===3) {
-			// 	if(!this.body.blocked.up   && !this.body.touching.up)   dirs.push(this.walkUp);
-			// 	if(!this.body.blocked.down && !this.body.touching.down) dirs.push(this.walkDown);
-			// }
+			if(this.dir===1 || this.dir===3) {
+				if(!this.body.blocked.up   && !this.body.touching.up)   dirs.push(this.walkUp);
+				if(!this.body.blocked.down && !this.body.touching.down) dirs.push(this.walkDown);
+			}
 
-			// if(false && dirs.length) {
-			// 	// console.log('dirs: %o', dirs.map(f => f.name).join(', '));
-			// 	Phaser.Math.RND.pick(dirs).bind(this)();
-			// 	this.dirChangeTimer = 0;
-			// }
+			if(dirs.length) {
+				// console.log('dirs: %o', dirs.map(f => f.name).join(', '));
+				Phaser.Math.RND.pick(dirs).bind(this)();
+				this.dirChangeTimer = 0;
+			}
 		}
-		// this.dirChangeTimer++;
+		this.dirChangeTimer++;
+	}
+
+	onCollide(object) {
+		console.log('enemy collide: object=%o, touching=%o, blocked=%o', object, this.body.touching, this.body.blocked);
+		this.switchDir();
 	}
 
 	switchDir() {

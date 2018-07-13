@@ -17,12 +17,7 @@ const config: GameConfig = {
 		arcade: {
 			gravity: {y:0},
 			debug: true
-		},
-
-		// grid: {
-		// 	debug: true,
-		// 	gridSize: 16
-		// }s
+		}
 	}
 };
 
