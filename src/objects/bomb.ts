@@ -5,6 +5,8 @@ export class Bomb extends Phaser.Physics.Arcade.Sprite {
 		super(params.scene, params.x, params.y, 'bomb');
 
 
+
+
 		console.log('bomb: %o', this);
 		params.scene.add.existing(this);
 		params.scene.physics.world.enable(this);
@@ -21,7 +23,11 @@ export class Bomb extends Phaser.Physics.Arcade.Sprite {
 
 	explode() {
 		console.log('bomb.explode()\t bomb=%o', this);
-		var explosion = new Explosion({scene:this.scene, x:this.x, y:this.y});
+		var explosion = new Explosion({scene:this.scene, x:this.x, y:this.y, frame:2});
 		this.destroy();
+	}
+
+	snapToGrid(n) {
+		
 	}
 }

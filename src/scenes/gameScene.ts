@@ -8,6 +8,7 @@ export class GameScene extends Phaser.Scene {
 	player:Player;
 	enemies:Phaser.GameObjects.Group;
 	bombs:Phaser.GameObjects.Group;
+	map;
 
 	constructor() {
 		super({key:'GameScene'});
@@ -21,6 +22,7 @@ export class GameScene extends Phaser.Scene {
 
 	create() {
 		var map = this.make.tilemap({key:'map'});
+		this.map = map;
 		var tiles = map.addTilesetImage('tileset', 'tileset');
 
 		var bgLayer = map.createDynamicLayer('background', tiles, 0,0);
@@ -120,7 +122,7 @@ export class GameScene extends Phaser.Scene {
 		});
 
 		anims.create({
-			key:'bomb', frameRate:3, repeat:0,
+			key:'bomb', frameRate:10, repeat:0,
 			frames: anims.generateFrameNumbers('bomb', {start:0, end:7})
 		});
 	}
