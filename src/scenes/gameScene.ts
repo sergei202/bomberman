@@ -1,11 +1,13 @@
 import { Player } from '../objects/player';
 import { Enemy } from '../objects/enemy';
+import { Bomb } from '../objects/bomb';
 
 export class GameScene extends Phaser.Scene {
 	width:number;
 	height:number;
 	player:Player;
 	enemies:Phaser.GameObjects.Group;
+	bombs:Phaser.GameObjects.Group;
 
 	constructor() {
 		super({key:'GameScene'});
@@ -33,7 +35,8 @@ export class GameScene extends Phaser.Scene {
 		this.initAnims();
 
 		this.enemies = this.add.group();
-		window['enemies'] = this.enemies;
+		this.bombs = this.add.group();
+		window['enemies'] = this.enemies.children.entries;
 
 		var objectLayer = map.getObjectLayer('objects');
 		objectLayer.objects.forEach(object => {
@@ -44,19 +47,16 @@ export class GameScene extends Phaser.Scene {
 				// if(!this.enemies.children.entries.length)
 				this.enemies.add(new Enemy({scene:this, x:object['x']+16, y:object['y']-16}));
 			}
-		})
+		});
 
-		// this.physics.add.collider(wallLayer, this.player, (player,wall) => {
-		// 	// console.log('wall collision: player=%o', player.body['blocked']);
-		// });
+		this.physics.add.collider(wallLayer, this.player, (player,wall) => {
+			// console.log('wall collision: player=%o', player.body['blocked']);
+		});
 		this.physics.add.collider(this.enemies, this.enemies, (a,b) => {
-			// console.log('enemy collision: a=%o, b=%o', a,b);
 			if((a as any).onCollide) (a as any).onCollide(b);
 			if((b as any).onCollide) (b as any).onCollide(a);
 		});
-
 		this.physics.add.collider(<any>[wallLayer,this.player], this.enemies, (a,b) => {
-			// console.log('enemy collision: a=%o, b=%o', a,b);
 			if((a as any).onCollide) (a as any).onCollide(b);
 			if((b as any).onCollide) (b as any).onCollide(a);
 		});
@@ -117,6 +117,11 @@ export class GameScene extends Phaser.Scene {
 		anims.create({
 			key: 'enemy-idle-up', frameRate:10, repeat:0,
 			frames: [{key:'enemy', frame:0}]
+		});
+
+		anims.create({
+			key:'bomb', frameRate:3, repeat:0,
+			frames: anims.generateFrameNumbers('bomb', {start:0, end:7})
 		});
 	}
 

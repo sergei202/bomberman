@@ -1,5 +1,4 @@
- export class Enemy extends Phaser.Physics.Arcade.Sprite {
-	cursors:any;
+export class Enemy extends Phaser.Physics.Arcade.Sprite {
 	speed = 100;
 	dir = 2;		// 0=up, 1=right, 2=down, 3=left
 	dirChangeTimer = 0;
@@ -50,7 +49,7 @@
 	}
 
 	onCollide(object) {
-		console.log('enemy collide: object=%o, touching=%o, blocked=%o', object, this.body.touching, this.body.blocked);
+		// console.log('enemy collide: object=%o, touching=%o, blocked=%o', object, this.body.touching, this.body.blocked);
 		this.switchDir();
 	}
 

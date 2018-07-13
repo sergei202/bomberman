@@ -1,33 +1,26 @@
+import { Bomb } from '../objects/bomb';
+
 export class Player extends Phaser.Physics.Arcade.Sprite {
 	cursors:any;
 	speed = 1000;
 	dir = 2;		// 0=up, 1=right, 2=down, 3=left
+	spacebar;
 
 	constructor(params) {
 		super(params.scene, params.x, params.y, 'player');
 		window['player'] = this;
 
 		this.cursors = params.scene.input.keyboard.createCursorKeys();
-
-		// params.scene.gridPhysics.world.enable(this);
+		this.spacebar = params.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
 		params.scene.add.existing(this);
 		params.scene.physics.world.enable(this);
-
-
-		// this.setCollideWorldBounds(true);
 
 		// this.body.immovable = true;
 
 		this.body.maxVelocity = <any>{x:150,y:150};
 		this.setSize(16,16,true);
 		this.setOrigin(0.5);
-		// this.body.friction = <any>{x:1000,y:1000};
-
-		// (<any>this.body).collidible = true;
-		// this.body.immovable = true;
-		// (<any>this.body).baseVelocity = 50;
-
 	}
 
 
@@ -35,8 +28,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 		this.handleInput();
 	}
 
+	public dropBomb() {
+		var bomb = new Bomb({scene:this.scene, x:this.body.x+8, y:this.body.y+8});
+	}
 
 	public handleInput() {
+		if(Phaser.Input.Keyboard.JustDown(this.spacebar)) this.dropBomb();
+
 		if(this.cursors.left.isDown) {
 			this.anims.play('player-walk-right', true);
 			this.dir = 3;
