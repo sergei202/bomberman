@@ -34,6 +34,7 @@ export class Explosion extends Phaser.GameObjects.Group {
 		params.scene.physics.world.enable(center);
 		params.scene.add.existing(center);
 		params.scene.explosions.add(center);
+		center.body.immovable = true;
 
 		this.createArm(1, 0);
 		this.createArm(-1,0);
@@ -81,6 +82,7 @@ export class Explosion extends Phaser.GameObjects.Group {
 		this.scene.add.existing(sprite);
 		this.scene.explosions.add(sprite);
 		this.scene.physics.world.enable(sprite);
+		sprite.body.immovable = true;
 
 		if(step<(this.radius-1)) {
 			this.createArm(gx+dx,gy+dy,step+1);

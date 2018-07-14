@@ -22,7 +22,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
 		this.body.maxVelocity = <any>{x:150,y:150};
 		this.setSize(16,16,true);
-		this.setOrigin(0.5);
+		this.setOrigin(0.5,0.75);
 	}
 
 
