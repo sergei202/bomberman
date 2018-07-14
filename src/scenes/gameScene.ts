@@ -59,6 +59,10 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
+		this.physics.add.collider(this.explosions, this.bombs, (a,b) => {
+			if((a as any).explode) (a as any).explode(b);
+			if((b as any).explode) (b as any).explode(a);
+		});
 		this.physics.add.collider(this.bombs, this.bombs);
 		this.physics.add.collider(this.bombs, wallLayer);
 		this.physics.add.collider(wallLayer, this.player);
@@ -144,7 +148,7 @@ export class GameScene extends Phaser.Scene {
 		});
 
 		anims.create({
-			key:'bomb', frameRate:5, repeat:0,
+			key:'bomb', frameRate:4, repeat:0,
 			frames: anims.generateFrameNumbers('bomb', {start:0, end:7})
 		});
 	}
