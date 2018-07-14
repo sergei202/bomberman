@@ -10,10 +10,16 @@ export class GameScene extends Phaser.Scene {
 	bombs:Phaser.GameObjects.Group;
 	explosions:Phaser.GameObjects.Group;
 	map;
+	level;
 
 	constructor() {
 		super({key:'GameScene'});
 		window['gameScene'] = this;
+	}
+
+	init(data) {
+		console.log('GameScene init()\t data=%o', data);
+		this.level = data.level;
 	}
 
 	preload() {
@@ -22,7 +28,7 @@ export class GameScene extends Phaser.Scene {
 	}
 
 	create() {
-		var map = this.make.tilemap({key:'map'});
+		var map = this.make.tilemap({key:'level'+this.level});
 		this.map = map;
 		var tiles = map.addTilesetImage('tileset', 'tileset');
 
@@ -53,6 +59,7 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
+		this.physics.add.collider(this.bombs, this.bombs);
 		this.physics.add.collider(this.bombs, wallLayer);
 		this.physics.add.collider(wallLayer, this.player);
 		this.physics.add.collider(this.bombs, this.player);

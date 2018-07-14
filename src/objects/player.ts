@@ -6,6 +6,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 	dir = 2;		// 0=up, 1=right, 2=down, 3=left
 	spacebar;
 	alive = true;
+	lastBombDrop = 0;
 
 	constructor(params) {
 		super(params.scene, params.x, params.y, 'player');
@@ -30,7 +31,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	public dropBomb() {
-		var bomb = new Bomb({scene:this.scene, x:this.body.x+8, y:this.body.y+8});
+		new Bomb({scene:this.scene, x:this.body.x+8, y:this.body.y+8});
+		this.lastBombDrop = 0;
 	}
 
 	public exploded() {
@@ -41,12 +43,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	public won() {
-		var text = this.scene.sys.add.text(this.scene['width']/6, 200, 'You won!', {fontSize:80, stroke:'#fff'});
-
+		var nextLevel = this.scene['level']+1;
+		this.scene.sys.add.text(this.scene['width']/6+20, 200, 'You won!', {fontSize:80, stroke:'#fff'});
+		if(nextLevel<=3) {
+			this.scene.sys.add.text(this.scene['width']/6+20, 300, 'Level '+nextLevel, {fontSize:80, stroke:'#fff'});
+			setTimeout(() => this.scene.scene.restart({level:nextLevel}), 1000);
+		} else {
+			this.scene.sys.add.text(10, 300, 'No more levels!  You really won!', {fontSize:80, stroke:'#fff'});
+		}
 	}
 
 	public handleInput() {
-		if(Phaser.Input.Keyboard.JustDown(this.spacebar)) this.dropBomb();
+		if(Phaser.Input.Keyboard.JustDown(this.spacebar) && this.lastBombDrop>10) this.dropBomb();
 
 		if(this.cursors.left.isDown) {
 			this.anims.play('player-walk-right', true);
@@ -80,6 +88,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 		}
 
 		this.flipX = this.dir===3;
+
+		this.lastBombDrop++;
 	}
 
 };

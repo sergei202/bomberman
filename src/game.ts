@@ -2,6 +2,7 @@
 
 import 'phaser';
 import { BootScene } from './scenes/bootScene';
+import { TitleScene } from './scenes/titleScene';
 import { GameScene } from './scenes/gameScene';
 
 // main game configuration
@@ -10,7 +11,7 @@ const config: GameConfig = {
 	height: 800,
 	type: Phaser.AUTO,
 	parent: 'game',
-	scene: [BootScene,GameScene],
+	scene: [BootScene,TitleScene,GameScene],
 	backgroundColor: '#fff',
 	physics: {
 		default: 'arcade',
