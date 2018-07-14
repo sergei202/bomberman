@@ -45,12 +45,11 @@ export class Explosion extends Phaser.GameObjects.Group {
 
 		this.scene.tweens.add({
 			targets: this.getChildren(),
-			scale: 0,
 			ease: 'Power1',
 			duration: 500,
+			alpha: '-=2',
 			onComplete: () => this.kill()
 		});
-
 	}
 
 

@@ -4,7 +4,7 @@ export class Bomb extends Phaser.Physics.Arcade.Sprite {
 	constructor(params) {
 		super(params.scene, params.x, params.y, 'bomb');
 
-		console.log('bomb: %o', this);
+		// console.log('bomb: %o', this);
 		params.scene.add.existing(this);
 		params.scene.physics.world.enable(this);
 		params.scene.bombs.add(this);
@@ -19,7 +19,7 @@ export class Bomb extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	explode() {
-		console.log('bomb.explode()\t bomb=%o', this);
+		// console.log('bomb.explode()\t bomb=%o', this);
 		var explosion = new Explosion({scene:this.scene, x:this.x, y:this.y, frame:2});
 		this.destroy();
 	}

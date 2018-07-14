@@ -2,6 +2,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 	speed = 100;
 	dir = 2;		// 0=up, 1=right, 2=down, 3=left
 	dirChangeTimer = 0;
+	alive = true;
 
 	constructor(params) {
 		super(params.scene, params.x, params.y, 'enemy');
@@ -49,12 +50,22 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 	}
 	
 	exploded() {
-		var enemiesLeft = this.scene['enemies'].getChildren().length;
-		console.log('exploded() enemiesLeft=%o', enemiesLeft);
-		if(enemiesLeft===1) {
-			this.scene['player'].won();
-		}
-		this.destroy();
+		if(!this.alive) return;
+		this.alive = false;
+		this.scene.add.tween({
+			targets: this,
+			ease: 'Power1',
+			alpha: '-=2',
+			duration: 500,
+			onComplete: () => {
+				var enemiesLeft = this.scene['enemies'].getChildren().length;
+				console.log('exploded() enemiesLeft=%o', enemiesLeft);
+				if(enemiesLeft===1) {
+					this.scene['player'].won();
+				}
+				this.destroy();
+			}
+		});
 	}
 
 	onCollide(object) {
