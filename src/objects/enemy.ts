@@ -47,6 +47,15 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 		}
 		this.dirChangeTimer++;
 	}
+	
+	exploded() {
+		var enemiesLeft = this.scene['enemies'].getChildren().length;
+		console.log('exploded() enemiesLeft=%o', enemiesLeft);
+		if(enemiesLeft===1) {
+			this.scene['player'].won();
+		}
+		this.destroy();
+	}
 
 	onCollide(object) {
 		// console.log('enemy collide: object=%o, touching=%o, blocked=%o', object, this.body.touching, this.body.blocked);

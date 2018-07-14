@@ -4,18 +4,15 @@ export class Bomb extends Phaser.Physics.Arcade.Sprite {
 	constructor(params) {
 		super(params.scene, params.x, params.y, 'bomb');
 
-
-
-
 		console.log('bomb: %o', this);
 		params.scene.add.existing(this);
 		params.scene.physics.world.enable(this);
 		params.scene.bombs.add(this);
 
-		// this.body.immovable = true;
-
-		this.setSize(16,16,true);
 		this.setOrigin(0.5);
+
+		this.x = this.snapToGrid(this.x);
+		this.y = this.snapToGrid(this.y);
 
 		this.anims.play('bomb', true);
 		this.on('animationcomplete', this.explode, this);
@@ -27,7 +24,10 @@ export class Bomb extends Phaser.Physics.Arcade.Sprite {
 		this.destroy();
 	}
 
-	snapToGrid(n) {
-		
+	snapToGrid(n,snapSize=32) {
+		n -= 16;
+		n /= snapSize;
+		n = Math.round(n);
+		return n*snapSize + 16;
 	}
 }

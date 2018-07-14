@@ -21,7 +21,7 @@ export class Explosion extends Phaser.GameObjects.Group {
 		// this.setOrigin(0.5);
 
 		// this.setFrame(2);
-		
+
 
 		var center = new Phaser.Physics.Arcade.Sprite(
 			params.scene,
@@ -31,17 +31,37 @@ export class Explosion extends Phaser.GameObjects.Group {
 			2
 		);
 		this.add(center);
+		params.scene.physics.world.enable(center);
 		params.scene.add.existing(center);
+		params.scene.explosions.add(center);
 
 		this.createArm(1, 0);
 		this.createArm(-1,0);
 		this.createArm(0, 1);
 		this.createArm(0,-1);
-		
+
+		window['explosion'] = this;
+
+		this.scene.tweens.add({
+			targets: this.getChildren(),
+			scale: 0,
+			ease: 'Power1',
+			duration: 500,
+			onComplete: () => this.kill()
+		});
+
 	}
 
+
+	kill() {
+		console.log('explosion kill() children=%o', this.children.entries.length);
+		while(this.getChildren().length) this.getChildren().map(e => e.destroy());	// Strange bug
+		this.destroy();
+	}
+
+
 	createArm(gx,gy, step=1) {		// grid units
-		console.log('createArm: gx=%o, gy=%o, step=%o', gx,gy,step);
+		// console.log('createArm: gx=%o, gy=%o, step=%o', gx,gy,step);
 
 		var x = this.x + 32*gx;
 		var y = this.y + 32*gy;
@@ -55,10 +75,12 @@ export class Explosion extends Phaser.GameObjects.Group {
 		if(gy) sprite.angle = 90;
 
 		var tile = this.scene.map.getTileAtWorldXY(x+dx*32,y+dy*32);
-		console.log('createArm: tile=%o', tile);
+		// console.log('createArm: tile=%o', tile);
 
+		this.add(sprite);
 		this.scene.add.existing(sprite);
-
+		this.scene.explosions.add(sprite);
+		this.scene.physics.world.enable(sprite);
 
 		if(step<(this.radius-1)) {
 			this.createArm(gx+dx,gy+dy,step+1);

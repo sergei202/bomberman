@@ -5,6 +5,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 	speed = 1000;
 	dir = 2;		// 0=up, 1=right, 2=down, 3=left
 	spacebar;
+	alive = true;
 
 	constructor(params) {
 		super(params.scene, params.x, params.y, 'player');
@@ -30,6 +31,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
 	public dropBomb() {
 		var bomb = new Bomb({scene:this.scene, x:this.body.x+8, y:this.body.y+8});
+	}
+
+	public exploded() {
+		if(!this.alive) return;
+		this.alive = false;
+		this.scene.cameras.main.shakeEffect.start(1000);
+		setTimeout(() => this.scene.scene.restart(), 1000);
+	}
+
+	public won() {
+		var text = this.scene.sys.add.text(this.scene['width']/6, 200, 'You won!', {fontSize:80, stroke:'#fff'});
+
 	}
 
 	public handleInput() {

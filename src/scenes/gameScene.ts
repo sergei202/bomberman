@@ -8,6 +8,7 @@ export class GameScene extends Phaser.Scene {
 	player:Player;
 	enemies:Phaser.GameObjects.Group;
 	bombs:Phaser.GameObjects.Group;
+	explosions:Phaser.GameObjects.Group;
 	map;
 
 	constructor() {
@@ -38,6 +39,7 @@ export class GameScene extends Phaser.Scene {
 
 		this.enemies = this.add.group();
 		this.bombs = this.add.group();
+		this.explosions = this.add.group();
 		window['enemies'] = this.enemies.children.entries;
 
 		var objectLayer = map.getObjectLayer('objects');
@@ -51,16 +53,29 @@ export class GameScene extends Phaser.Scene {
 			}
 		});
 
-		this.physics.add.collider(wallLayer, this.player, (player,wall) => {
-			// console.log('wall collision: player=%o', player.body['blocked']);
-		});
+		this.physics.add.collider(this.bombs, wallLayer);
+		this.physics.add.collider(wallLayer, this.player);
+		this.physics.add.collider(this.bombs, this.player);
 		this.physics.add.collider(this.enemies, this.enemies, (a,b) => {
+			if((a as any).onCollide) (a as any).onCollide(b);
+			if((b as any).onCollide) (b as any).onCollide(a);
+		});
+		this.physics.add.collider(this.bombs, this.enemies, (a,b) => {
 			if((a as any).onCollide) (a as any).onCollide(b);
 			if((b as any).onCollide) (b as any).onCollide(a);
 		});
 		this.physics.add.collider(<any>[wallLayer,this.player], this.enemies, (a,b) => {
 			if((a as any).onCollide) (a as any).onCollide(b);
 			if((b as any).onCollide) (b as any).onCollide(a);
+		});
+
+		this.physics.add.collider(this.explosions, this.player, (explosion,player) => {
+			console.log('player explosion collision: explosion=%o, player=%o', explosion,player);
+			(player as any).exploded();
+		});
+		this.physics.add.collider(this.explosions, this.enemies, (explosion,enemy) => {
+			console.log('enemy explosion collision: explosion=%o, enemy=%o', explosion,enemy);
+			(enemy as any).exploded();
 		});
 	}
 
@@ -122,7 +137,7 @@ export class GameScene extends Phaser.Scene {
 		});
 
 		anims.create({
-			key:'bomb', frameRate:10, repeat:0,
+			key:'bomb', frameRate:5, repeat:0,
 			frames: anims.generateFrameNumbers('bomb', {start:0, end:7})
 		});
 	}
